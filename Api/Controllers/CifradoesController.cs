@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Api.Controllers
 {
-    [Route("Api")]
+    [Route("api")]
     [ApiController]
     public class CifradoesController : ControllerBase
     {
@@ -23,40 +23,63 @@ namespace Api.Controllers
 
             return xd;
         }
-        [HttpPost("Cypher/{tipo}/{name}")]
-        public IActionResult Cypher([FromForm] IFormFile file, [FromForm] string key,[FromRoute] string tipo, [FromRoute] string name)
+        [HttpPost("cipher/{method}")]
+        public IActionResult Cypher([FromForm] IFormFile file, [FromForm] string key, [FromRoute] string method)
         {
             try
             {
+                string nombre = "";
                 if (file == null)
                     return BadRequest();
-
-                string Ruta = Path.GetFullPath("ArchivosOriginales\\" + name + file.FileName);
+                else
+                {
+                    nombre = file.FileName;
+                    nombre = nombre.Replace(".txt", "");
+                }
+                string Ruta = Path.GetFullPath("ArchivosOriginales\\" + file.FileName);
                 FileStream ArchivoOriginal = new FileStream(Ruta, FileMode.OpenOrCreate);
                 file.CopyTo(ArchivoOriginal);
                 ArchivoOriginal.Close();
-                if (tipo == "Cesar")
+                if (method == "Cesar" || method == "César")
                 {
-                    string Ruta2 = Path.GetFullPath("ArchivosCifrados\\" + name + ".Ces");
+                    Cifrado temp = new Cifrado();
+                    temp.NombreOriginal = file.FileName;
+                    temp.NombreCifrado = nombre + ".csr";
+                    try
+                    {
+                        F.Nombres.Add(temp.NombreCifrado, temp.NombreOriginal);
+                    }
+                    catch
+                    {
+                        string json = "El nombre del archivo que desea comprimir ya existe";
+                        ArchivoOriginal.Close();
+                        return BadRequest(json);
+                    }
+                    string Ruta2 = Path.GetFullPath("ArchivosCifrados\\" + nombre + ".csr");
                     F.Cesar.Cifrar(Ruta, Ruta2, key);
                     FileStream archivoCifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
                     FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/Cesar");
-                    Cifrado temp = new Cifrado();
-                    temp.NombreOriginal = name + file.FileName;
-                    temp.NombreCifrado = name + ".Ces";
-                    F.Nombres.Add(temp.NombreCifrado, temp.NombreOriginal);
                     return ArchivoCifrado2;
                 }
-                else if(tipo=="ZigZag")
+                else if (method == "ZigZag")
                 {
-                    string Ruta2 = Path.GetFullPath("ArchivosCifrados\\" + name + ".Zig");
-                    F.Cesar.Cifrar(Ruta, Ruta2, key);
-                    FileStream archivoCifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
-                    FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/Cesar");
                     Cifrado temp = new Cifrado();
-                    temp.NombreOriginal = name + file.FileName;
-                    temp.NombreCifrado = name + ".Zig";
-                    F.Nombres.Add(temp.NombreCifrado, temp.NombreOriginal);
+                    temp.NombreOriginal = file.FileName;
+                    temp.NombreCifrado = nombre + ".zz";
+                    try
+                    {
+                        F.Nombres.Add(temp.NombreCifrado, temp.NombreOriginal);
+                    }
+                    catch
+                    {
+                        string json = "El nombre del archivo que desea comprimir ya existe";
+                        ArchivoOriginal.Close();
+                        return BadRequest(json);
+                    }
+                    string Ruta2 = Path.GetFullPath("ArchivosCifrados\\" + nombre + ".zz");
+                    F.Zigzag.Cifrar(Ruta, Ruta2, key);
+                    FileStream archivoCifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
+                    FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/ZigZag");
                     return ArchivoCifrado2;
                 }
                 else
@@ -70,7 +93,7 @@ namespace Api.Controllers
                 return BadRequest(error.Message);
             }
         }
-        [HttpPost("DeCypher")]
+        [HttpPost("decipher")]
         public IActionResult DeCypher([FromForm] IFormFile file, [FromForm] string key)
         {
             if (file == null)
@@ -82,16 +105,19 @@ namespace Api.Controllers
             FileStream ArchivoCifrado = new FileStream(Ruta, FileMode.OpenOrCreate);
             file.CopyTo(ArchivoCifrado);
             ArchivoCifrado.Close();
-            if (Tipo == "Ces")
+            if (Tipo == "csr")
             {
                 F.Cesar.DeCifrar(Ruta, Ruta2, key);
                 FileStream ArchivoDescifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
                 FileStreamResult ArchivoDescifrado2 = new FileStreamResult(ArchivoDescifrado, "text/Cesar");
                 return ArchivoDescifrado2;
             }
-            else if(Tipo == "Zig")
+            else if (file.FileName.Substring(file.FileName.Length - 2, 2) == "zz")
             {
-
+                F.Zigzag.DeCifrar(Ruta, Ruta2, key);
+                FileStream ArchivoDescifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
+                FileStreamResult ArchivoDescifrado2 = new FileStreamResult(ArchivoDescifrado, "text/ZigZag");
+                return ArchivoDescifrado2;
             }
             else
             {
