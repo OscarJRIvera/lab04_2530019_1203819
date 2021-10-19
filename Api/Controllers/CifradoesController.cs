@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,11 +24,7 @@ namespace Api.Controllers
             return xd;
         }
         [HttpPost("cipher/{method}")]
-<<<<<<< Updated upstream
         public IActionResult Cipher([FromForm] IFormFile file, [FromForm] string key,[FromRoute] string method)
-=======
-        public IActionResult Cipher([FromForm] IFormFile file, [FromForm] string key, [FromRoute] string method)
->>>>>>> Stashed changes
         {
             try
             {
@@ -174,11 +170,7 @@ namespace Api.Controllers
                 string Ruta3 = Path.GetFullPath("PERMUTACIONES.txt");
                 F.Sdes.Cifrar(Ruta, Ruta2, valor, Ruta3);
                 FileStream archivoCifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
-<<<<<<< Updated upstream
-                FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/Cesar");
-=======
                 FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/SDES");
->>>>>>> Stashed changes
                 return ArchivoCifrado2;
             }
             catch (Exception error)
@@ -189,18 +181,6 @@ namespace Api.Controllers
         [HttpPost("sdes/decipher")]
         public IActionResult DeCiphersdes([FromForm] IFormFile file, [FromForm] string key)
         {
-<<<<<<< Updated upstream
-            if (file == null)
-                return BadRequest();
-            string Ruta = Path.GetFullPath("ArchivosCifrados\\" + file.FileName);
-            string nombre = F.Nombres[file.FileName];
-            string Ruta2 = Path.GetFullPath("ArchivosDescifrados\\" + nombre);
-            FileStream ArchivoCifrado = new FileStream(Ruta, FileMode.OpenOrCreate);
-            file.CopyTo(ArchivoCifrado);
-            ArchivoCifrado.Close();
-            FileStream ArchivoDescifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
-            FileStreamResult ArchivoDescifrado2 = new FileStreamResult(ArchivoDescifrado, "text/Cesar");
-=======
             int valor = 0;
             if (file == null)
                 return BadRequest();
@@ -228,7 +208,6 @@ namespace Api.Controllers
             F.Sdes.DesCifrar(Ruta, Ruta2, valor, Ruta3);
             FileStream ArchivoDescifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
             FileStreamResult ArchivoDescifrado2 = new FileStreamResult(ArchivoDescifrado, "text/SDES");
->>>>>>> Stashed changes
             return ArchivoDescifrado2;
         }
 
