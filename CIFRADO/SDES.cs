@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -8,22 +8,6 @@ namespace CIFRADO
 {
     public class SDES
     {
-<<<<<<< Updated upstream
-        Dictionary<string, List<int>> permutaciones = new Dictionary<string, List<int>>();
-        public void Cifrar(String Ruta1, String Ruta2, int llave, String Rutapermutaciones)
-        {
-            Permutaciones(Rutapermutaciones);
-        }
-        public void llaves()
-        {
-
-        }
-        public void Permutaciones(String RutaP)
-        {
-            string[] perm = System.IO.File.ReadAllLines(RutaP);
-            int contador = 0;
-            foreach(var k in perm)
-=======
         List<List<string>> s0 = new List<List<string>>();
         List<List<string>> s1 = new List<List<string>>();
         Dictionary<string, List<int>> permutaciones = new Dictionary<string, List<int>>();
@@ -54,8 +38,8 @@ namespace CIFRADO
                 }
                 contador++;
             }
-            var escribir2 = new byte[contador];
-            for (int i = 0; i < contador; i++)
+            var escribir2= new byte[contador];
+            for(int i=0; i < contador; i++)
             {
                 escribir2[i] = escribir[i];
             }
@@ -122,7 +106,7 @@ namespace CIFRADO
             //suma
             string sumaka = "";
             int posicion = 0;
-            foreach (var f in TempEP1)
+            foreach(var f in TempEP1)
             {
                 if (f == Ka[posicion])
                 {
@@ -154,7 +138,7 @@ namespace CIFRADO
             }
             //suma p4 con los primeros 4
             string sumap4 = "";
-            posicion = 0;
+            posicion= 0;
             foreach (var f in Firstfour)
             {
                 if (f == p4[posicion])
@@ -258,10 +242,9 @@ namespace CIFRADO
                 s1.Add(temp2);
             }
             int fila = 0;
-            foreach (var k in matrizs1)
-            {
+            foreach(var k in matrizs1){
                 string[] temp = k.Split(",");
-                foreach (var f in temp)
+                foreach(var f in temp)
                 {
                     s1[fila].Add(f);
                 }
@@ -294,7 +277,7 @@ namespace CIFRADO
             }
             foreach (var k in permutaciones["P10"])
             {
-                temp += clavebinario.Substring(k - 1, 1);
+                temp += clavebinario.Substring(k-1, 1);
             }
             //primera separacion/ls-1
             Firstfive = temp.Substring(0, 5);
@@ -307,7 +290,7 @@ namespace CIFRADO
             temp = lsa1 + lsb1;
             foreach (var k in permutaciones["P8"])
             {
-                k1 += temp.Substring(k - 1, 1);
+                k1 += temp.Substring(k-1, 1);
             }
             //ls-2
             Firstfive = lsa1;
@@ -328,17 +311,12 @@ namespace CIFRADO
             permutaciones = new Dictionary<string, List<int>>();
             string[] perm = System.IO.File.ReadAllLines(RutaP);
             int contador = 0;
-            foreach (var k in perm)
->>>>>>> Stashed changes
+            foreach(var k in perm)
             {
                 contador++;
                 List<int> templista = new List<int>();
                 string[] temp = k.Split(",");
-<<<<<<< Updated upstream
                 foreach(var y in temp)
-=======
-                foreach (var y in temp)
->>>>>>> Stashed changes
                 {
                     templista.Add(Convert.ToInt32(y));
                 }
@@ -356,12 +334,7 @@ namespace CIFRADO
                     permutaciones.Add("IP-1", templista);
 
             }
-<<<<<<< Updated upstream
-            int x = 0;
             
-=======
-
->>>>>>> Stashed changes
         }
     }
 }
