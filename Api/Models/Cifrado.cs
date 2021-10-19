@@ -8,7 +8,7 @@ namespace Api.Models
     public class Cifrado
     {
         public int Id { get; set; }
-        public string NombreOriginal { get;set; }
-        public string NombreCifrado { get;set; }
+        public string NombreOriginal { get; set; }
+        public string NombreCifrado { get; set; }
     }
 }
