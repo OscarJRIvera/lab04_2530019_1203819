@@ -19,12 +19,12 @@ namespace Api.Controllers
         [HttpGet]
         public string Get()
         {
-            string xd = "Lab04";
+            string xd = "Lab04 y lab05";
 
             return xd;
         }
         [HttpPost("cipher/{method}")]
-        public IActionResult Cypher([FromForm] IFormFile file, [FromForm] string key, [FromRoute] string method)
+        public IActionResult Cipher([FromForm] IFormFile file, [FromForm] string key, [FromRoute] string method)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Api.Controllers
             }
         }
         [HttpPost("decipher")]
-        public IActionResult DeCypher([FromForm] IFormFile file, [FromForm] string key)
+        public IActionResult DeCipher([FromForm] IFormFile file, [FromForm] string key)
         {
             if (file == null)
                 return BadRequest();
@@ -126,6 +126,119 @@ namespace Api.Controllers
             }
             return null;
         }
+
+        [HttpPost("sdes/cipher/{nombre}")]
+        public IActionResult Ciphersdes([FromForm] IFormFile file, [FromForm] string key, [FromRoute] string nombre)
+        {
+            try
+            {
+                int valor = 0;
+                if (file == null)
+                    return BadRequest();
+                try
+                {
+                    valor = Convert.ToInt32(key);
+                    if (valor < 0 || valor > 1023)
+                    {
+                        string json = "Valor debe ser in entero positivo no mayor a 1023";
+                        return BadRequest(json);
+                    }
+                }
+                catch
+                {
+                    string json = "Valor de la llave debe de ser un int";
+                    return BadRequest(json);
+                }
+                string Ruta = Path.GetFullPath("ArchivosOriginales\\" + file.FileName);
+                FileStream ArchivoOriginal = new FileStream(Ruta, FileMode.OpenOrCreate);
+                file.CopyTo(ArchivoOriginal);
+                ArchivoOriginal.Close();
+                Cifrado temp = new Cifrado();
+                temp.NombreOriginal = file.FileName;
+                temp.NombreCifrado = nombre + ".sdes";
+                try
+                {
+                    F.Nombres.Add(temp.NombreCifrado, temp.NombreOriginal);
+                }
+                catch
+                {
+                    string json = "El nombre del archivo que desea comprimir ya existe";
+                    ArchivoOriginal.Close();
+                    return BadRequest(json);
+                }
+                string Ruta2 = Path.GetFullPath("ArchivosCifrados\\" + nombre + ".sdes");
+                string Ruta3 = Path.GetFullPath("PERMUTACIONES.txt");
+                F.Sdes.Cifrar(Ruta, Ruta2, valor, Ruta3);
+                FileStream archivoCifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
+                FileStreamResult ArchivoCifrado2 = new FileStreamResult(archivoCifrado, "text/SDES");
+                return ArchivoCifrado2;
+            }
+            catch (Exception error)
+            {
+                return BadRequest(error.Message);
+            }
+        }
+        [HttpPost("sdes/decipher")]
+        public IActionResult DeCiphersdes([FromForm] IFormFile file, [FromForm] string key)
+        {
+            int valor = 0;
+            if (file == null)
+                return BadRequest();
+            try
+            {
+                valor = Convert.ToInt32(key);
+                if (valor < 0 || valor > 1023)
+                {
+                    string json = "Valor debe ser in entero positivo no mayor a 1023";
+                    return BadRequest(json);
+                }
+            }
+            catch
+            {
+                string json = "Valor de la llave debe de ser un int";
+                return BadRequest(json);
+            }
+            string Ruta = Path.GetFullPath("ArchivosCifrados\\" + file.FileName);
+            string nombre = F.Nombres[file.FileName];
+            string Ruta2 = Path.GetFullPath("ArchivosDescifrados\\" + nombre);
+            string Ruta3 = Path.GetFullPath("PERMUTACIONES.txt");
+            FileStream ArchivoCifrado = new FileStream(Ruta, FileMode.OpenOrCreate);
+            file.CopyTo(ArchivoCifrado);
+            ArchivoCifrado.Close();
+            F.Sdes.DesCifrar(Ruta, Ruta2, valor, Ruta3);
+            FileStream ArchivoDescifrado = new FileStream(Ruta2, FileMode.OpenOrCreate);
+            FileStreamResult ArchivoDescifrado2 = new FileStreamResult(ArchivoDescifrado, "text/SDES");
+            return ArchivoDescifrado2;
+        }
+        [HttpGet("rsa/keys/{p}/{q}")]
+        public IActionResult KeysRSA([FromRoute] string p, [FromRoute] string q)
+        {
+            try
+            {
+                int p1 = 0;
+                int q1 = 0;
+                try
+                {
+                    p1 = int.Parse(p);
+                    q1 = int.Parse(q);
+                }
+                catch (Exception error)
+                {
+                    return BadRequest(error.Message);
+                }
+                F.RSA.llaves(p1, q1);
+                return null;
+            }
+            catch (Exception error)
+            {
+                return BadRequest(error.Message);
+            }
+        }
+        //[HttpPost("rsa/{nombre}")]
+        //public IActionResult CorDRSA([FromForm] IFormFile file, [FromRoute] string nombre)
+        //{
+
+        //}
 
 
     }
