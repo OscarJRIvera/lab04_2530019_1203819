@@ -146,7 +146,7 @@ namespace CIFRADO
         public string llaves(int p, int q,String RutaPrivate, String RutaPublic,String RutaZip)
         {
             int n = p * q;
-            if (n < 255)
+            if (n < 256)
             {
                 return"Error1";
             }
