@@ -12,9 +12,13 @@ namespace Api.Models.Data
         public Dictionary<string, string> Nombres;
         public ZigZag Zigzag;
         public CIFRADO.SDES Sdes;
-        public IRSA RSA;
+        public RSA RSA;
+        public String NombreO;
+        public String NombreC;
         private Singleton()
         {
+            NombreC = "";
+            NombreO = "";
             RSA = new RSA();
             Cesar = new Cesar();
             Nombres = new Dictionary<string, string>();

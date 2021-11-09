@@ -9,6 +9,16 @@ namespace CIFRADO
     public class Cesar
     {
         Dictionary<int, byte> DWithkey = new Dictionary<int, byte>();
+        public void eliminar(string Ruta, string Ruta2)
+        {
+            File.Delete(Ruta);
+            File.Delete(Ruta2);
+        }
+
+        public void eliminar2(string Ruta)
+        {
+            File.Delete(Ruta);
+        }
         public void Cifrar(String Ruta1, String Ruta2,string llave)
         {
             DWithkey = new Dictionary<int, byte>();
